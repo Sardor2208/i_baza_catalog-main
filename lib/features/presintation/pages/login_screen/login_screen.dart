@@ -1,0 +1,158 @@
+
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:i_baza_catalog/features/presintation/pages/homescreen/home_screen.dart';
+import 'package:i_baza_catalog/features/presintation/pages/register_screen/login.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../register_screen/signup.dart'; // Ensure you have flutter_svg package in your pubspec.yaml
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+
+  File? avatar;
+  Future<void> pickerAvatar() async {
+    ImagePicker imagePicker = ImagePicker();
+    final file = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (file != null) {
+      setState(() {
+        avatar = File.fromUri(Uri.file(file.path));
+      });
+    }
+  }
+
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+  @override
+  void initState() {
+    super.initState();
+    _passwordController.addListener(() {
+      setState(() {}); // Call setState to rebuild the widget with the new icon
+    });
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 60,),
+            const SizedBox(height: 96),
+            Center(child: SvgPicture.asset('assets/icons/svg/login_screen_icon.svg')),
+            const SizedBox(height: 48),
+            Text('Xush kelibsiz!',style: TextStyle(fontSize: 28,fontWeight: FontWeight.w700)),
+            const SizedBox(height: 4),
+            Text('Ma’lumotlarni kiriting',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500,color: Colors.grey.shade500,fontFamily: 'Rubik')),
+            const SizedBox(height: 22),
+            Text('Telefon raqam',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _phoneController,
+              decoration: InputDecoration(
+                labelText: "+998 ",
+                hintText: '99 123 45 67',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              keyboardType: TextInputType.phone,
+            ),
+
+            SizedBox(height: 16),
+            Text('Parol',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500)),
+            const SizedBox(height: 8),
+          TextField(
+            controller: _passwordController,
+            obscureText: !_isPasswordVisible,
+            decoration: InputDecoration(
+              hintText: 'Parolni kiriting',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              suffixIcon: _passwordController.text.isEmpty
+                  ? TextButton(
+                onPressed: () {
+
+                },
+                child: Text(
+                  'Unutdingizmi?',
+                    style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Colors.grey.shade500)
+                ),
+              )
+                  : IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Theme.of(context).primaryColorDark,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
+            ),
+            keyboardType: TextInputType.visiblePassword,
+          ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+
+              },
+              child:const Text('Kirish',style: TextStyle(color: Colors.black)),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.yellow,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(double.infinity,48),
+              ),
+            ),
+            SizedBox(height: 189),
+            Center(child: Text('Ilovada yangimisiz?',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Colors.grey.shade500))),
+            SizedBox(height: 14),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Login()),
+                );
+              },
+              child:const Text('Ro‘yxatdan o‘tish',style: TextStyle(color: Colors.black)),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.yellow.shade100,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(double.infinity,48),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
